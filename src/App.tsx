@@ -11,6 +11,8 @@ const App = () => {
     const modelName = "./best.onnx";
     const modelInputShape = [1, 3, 640, 640];
 
+    const classes = ['Чайник для газовой плиты', 'Заварочный чайник', 'Электрический чайник']
+
     cv["onRuntimeInitialized"] = async () => {
         // create session
         console.log("Loading YOLOv7 model...");
@@ -91,6 +93,10 @@ const App = () => {
                 ctx!.strokeStyle = '#1a2edb'; // тёмно-синий цвет
                 ctx!.lineWidth = 5; // толщина линии в 5px
                 ctx!.strokeRect(x1, y1, width, height);
+                 
+                ctx!.fillStyle = '#1a2edb'; // цвет текста
+                ctx!.font = '14px Arial'; // размер и шрифт текста
+                ctx!.fillText(classes[parseInt(box.classId.toString())], x1, y1 + 16);
             });
         }
     }
@@ -140,7 +146,7 @@ const App = () => {
                 </Button>
             </div>
             <div>
-                <canvas style={{width: '400px'}} id="img1"></canvas>
+                <canvas style={{width: '700px'}} id="img1"></canvas>
             </div>
         </div>
     )
