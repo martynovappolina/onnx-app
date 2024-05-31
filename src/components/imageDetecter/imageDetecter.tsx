@@ -3,8 +3,9 @@ import { useState } from "react";
 import { Input, Button } from "@mui/material";
 import cv from "@techstark/opencv-js";
 import { Tensor, InferenceSession } from "onnxruntime-web";
+import './imageDetecter.css'
 
-interface ImageDetecterParams { model: ArrayBuffer; }
+interface ImageDetecterParams { model: ArrayBuffer; classes: string[]}
 
 
 const ImageDetecter = (params: ImageDetecterParams) => {
@@ -12,8 +13,6 @@ const ImageDetecter = (params: ImageDetecterParams) => {
     const [session, setSession] = useState<InferenceSession>();
 
     const modelInputShape = [1, 3, 640, 640];
-
-    const classes = ['Чайник для газовой плиты', 'Заварочный чайник', 'Электрический чайник']
 
     useEffect(()=>{
         (async function () {
@@ -105,7 +104,7 @@ const ImageDetecter = (params: ImageDetecterParams) => {
                  
                 ctx!.fillStyle = '#1a2edb'; // цвет текста
                 ctx!.font = '14px Arial'; // размер и шрифт текста
-                ctx!.fillText(classes[parseInt(box.classId.toString())], x1, y1 + 16);
+                ctx!.fillText(params.classes[parseInt(box.classId.toString())], x1, y1 + 16);
             });
         }
     }
@@ -145,7 +144,7 @@ const ImageDetecter = (params: ImageDetecterParams) => {
     };
 
     return (
-        <div>
+        <div className="image-detecter">
             <div>
                 <Input type="file" onChange={onFileChange}/>
             </div>
