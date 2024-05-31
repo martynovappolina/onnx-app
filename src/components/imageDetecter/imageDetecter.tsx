@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Input, Button } from "@mui/material";
+import { Input, Button, CircularProgress } from "@mui/material";
 import cv from "@techstark/opencv-js";
 import { Tensor, InferenceSession } from "onnxruntime-web";
 import './imageDetecter.css'
@@ -11,12 +11,14 @@ interface ImageDetecterParams { model: ArrayBuffer; classes: string[]}
 const ImageDetecter = (params: ImageDetecterParams) => {
     const [file, setFile] = useState<File>();
     const [session, setSession] = useState<InferenceSession>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const modelInputShape = [1, 3, 640, 640];
 
     useEffect(()=>{
         (async function () {
             console.log("Loading YOLOv7 model...");
+            setIsLoading(true)
             const yolov7 = await InferenceSession.create(params.model);
             console.log("YOLOv7 model is load!");
     
@@ -30,6 +32,7 @@ const ImageDetecter = (params: ImageDetecterParams) => {
             await yolov7.run({ images: tensor });
     
             setSession(yolov7);
+            setIsLoading(false)
             console.log("Сессия создана и подготовлена");
     
         })()
@@ -48,7 +51,8 @@ const ImageDetecter = (params: ImageDetecterParams) => {
             console.log("Загрузите изображение в формате jpg");
             return;
         }
-        debugger
+        //debugger
+        //setIsLoading(true)
         console.log("Изображение успешно загружено");
 
         const image = new Image;
@@ -106,6 +110,7 @@ const ImageDetecter = (params: ImageDetecterParams) => {
                 ctx!.font = '14px Arial'; // размер и шрифт текста
                 ctx!.fillText(params.classes[parseInt(box.classId.toString())], x1, y1 + 16);
             });
+            //setIsLoading(false);
         }
     }
 
@@ -142,6 +147,12 @@ const ImageDetecter = (params: ImageDetecterParams) => {
 
         return [input, xRatio, yRatio];
     };
+
+    if(isLoading){
+        return <div className="loader-container">
+            <CircularProgress />
+        </div>
+    }
 
     return (
         <div className="image-detecter">

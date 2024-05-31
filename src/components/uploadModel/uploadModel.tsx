@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import './uploadModel.css'
 import { useState } from 'react';
+import { LoadingButton } from '@mui/lab';
 
 interface UploadModelParams { onUpload: (data: ArrayBuffer, classes: string[]) => void; }
 
@@ -39,11 +40,12 @@ const UploadModel = (params: UploadModelParams) => {
             }
         </div>
 
-        <Button variant={"contained"} onClick={()=>{
+        <LoadingButton 
+        variant={"contained"} onClick={()=>{
             params.onUpload(model, classes);
         }}>
             Далее
-        </Button>
+        </LoadingButton>
 
     </div>
 }
